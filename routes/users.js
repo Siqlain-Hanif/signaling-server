@@ -7,7 +7,8 @@ router.get('/', function (req, res, next) {
     res.json(registeredOnlineUsers);
 });
 router.get('/clear', function (req, res, next) {
-    req.registeredOnlineUsers = [];
+    let registeredOnlineUsers = req.registeredOnlineUsers;
+    registeredOnlineUsers.splice(0, registeredOnlineUsers.length);
     res.json(registeredOnlineUsers);
     io.emit('online_users', registeredOnlineUsers); //Can sent one user as well
 });
@@ -38,6 +39,7 @@ router.post('/ping', function (req, res, next) {
 router.post('/call', function (req, res, next) {
     let io = req.io;
     let registeredOnlineUsers = req.registeredOnlineUsers;
+
     //soc_id: user hows calling
     //to_id: user to call
     let { soc_id, to_id, data } = req.body;
