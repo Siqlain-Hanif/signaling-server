@@ -2,11 +2,16 @@ var express = require('express');
 var router = express.Router();
 var Peer = require('simple-peer')
 var wrtc = require('wrtc')
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
     let registeredOnlineUsers = req.registeredOnlineUsers;
     res.json(registeredOnlineUsers);
 });
-router.post('/ping', function(req, res, next) {
+router.get('/clear', function (req, res, next) {
+    req.registeredOnlineUsers = [];
+    res.json(registeredOnlineUsers);
+    io.emit('online_users', registeredOnlineUsers); //Can sent one user as well
+});
+router.post('/ping', function (req, res, next) {
     let io = req.io;
     let registeredOnlineUsers = req.registeredOnlineUsers;
 
@@ -30,7 +35,7 @@ router.post('/ping', function(req, res, next) {
     io.emit('new_connection', newUser);
     res.json(newUser);
 });
-router.post('/call', function(req, res, next) {
+router.post('/call', function (req, res, next) {
     let io = req.io;
     let registeredOnlineUsers = req.registeredOnlineUsers;
     //soc_id: user hows calling
@@ -59,7 +64,7 @@ router.post('/call', function(req, res, next) {
 });
 
 
-router.post('/accept-call', function(req, res, next) {
+router.post('/accept-call', function (req, res, next) {
     let io = req.io;
     let registeredOnlineUsers = req.registeredOnlineUsers;
     //soc_id: user how's accepted the call
@@ -81,7 +86,7 @@ router.post('/accept-call', function(req, res, next) {
         next('User is busy');
     }
 });
-router.post('/reject-call', function(req, res, next) {
+router.post('/reject-call', function (req, res, next) {
     let io = req.io;
     let registeredOnlineUsers = req.registeredOnlineUsers;
     //soc_id: user how's rejected the call
@@ -103,7 +108,7 @@ router.post('/reject-call', function(req, res, next) {
         next('User is busy');
     }
 });
-router.post('/end-call', function(req, res, next) {
+router.post('/end-call', function (req, res, next) {
     let io = req.io;
     let registeredOnlineUsers = req.registeredOnlineUsers;
     //soc_id: user how's rejected the call
